@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Calphabet</title>
+
+    <script>
+      const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+
+      function addWords() {
+        const word1 = document.getElementById('word1').value;
+        const word2 = document.getElementById('word2').value;
+        const result = document.getElementById('result');
+        const resultWord = document.getElementById('resultWord');
+
+        const sum = toNumber(word1) + toNumber(word2);
+
+        result.innerText = toNumber(word1 + word2);
+        resultWord.innerText = toWord(sum);
+      }
+
+      function toNumber(word) {
+        if (!word) {
+          return 0;
+        }
+
+        return word.split('').reduce((acc, c) => acc + toLocationNumeral(c), 0);
+      }
+
+      function toWord(n) {
+        if (n === 0) {
+          return '';
+        }
+
+        return fromLocationNumeral(n);
+      }
+
+      function toLocationNumeral(c) {
+        const idx = alphabet.indexOf(c);
+        if (idx < 0) {
+          // TODO(bryan): Do something about an invalid character.
+          return 0;
+        }
+
+        return 1 << idx;
+      }
+
+      function fromLocationNumeral(n) {
+        let s = '';
+        let idx = 0;
+        while (n !== 0) {
+          const mask = 1 << idx;
+          const bit = n & mask;
+
+          if (bit) {
+            s += alphabet[idx];
+            n &= ~mask;
+          }
+
+          idx++;
+          if (idx >= alphabet.length) {
+            // TODO(bryan) Print an error if number is bigger than the alphabet.
+            break;
+          }
+        }
+
+        return s;
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Calphabet</h1>
+    <p>Math 2.0, now with adding words!</p>
+
+    <label for="word1">Word 1</label>
+    <input type="text" id="word1" />
+
+    <label for="word2">Word 2</label>
+    <input type="text" id="word2" />
+
+    <button onclick="addWords()">Add Words</button>
+
+    <div>Result: <span id="result"></span></div>
+    <div>Result word: <span id="resultWord"></span></div>
+  </body>
+</html>
